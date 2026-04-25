@@ -5,25 +5,21 @@ description: >
   narration. Pipeline: ffmpeg extracts audio → Whisper produces word-level
   timestamps → automatic TEXT_SEGMENTS generation with mode hints (burst /
   normal / thinking / deliberate) and frame-accurate delayFrames → injection
-  into a bundled Remotion typewriter-video template → render. Bundles the
-  typewriter-video Remotion engine (yammaku/typewriter-video) so a single
-  clone is self-sufficient. Use when the user has a finished video (talking-
-  head, screencast, podcast clip) and wants the typewriter to mirror what's
-  spoken, frame-synced to the audio. For typewriter videos authored from a
-  script (without source video), use the typewriter-video skill instead.
+  into a bundled Remotion template → render. Use when the user has a
+  finished video (talking-head, screencast, podcast clip) and wants the
+  typewriter to mirror what's spoken, frame-synced to the audio.
 compatibility: Requires Python >= 3.9, ffmpeg, Node.js >= 18, and openai-whisper.
 license: MIT
 metadata:
   author: dijkstra1115
-  upstream: yammaku/typewriter-video
   version: "0.1"
 ---
 
 # Video2Typewriter
 
 Auto-generate a typewriter B-roll synced to a source video's spoken narration.
-The skill bundles the [typewriter-video](https://github.com/yammaku/typewriter-video)
-Remotion engine, so it's a one-clone install.
+A single `git clone` of this skill is self-sufficient — the Remotion engine,
+sound packs, fonts, and reference docs are all bundled.
 
 ## Output
 
@@ -172,7 +168,7 @@ block atomically.
 video2typewriter/
 ├── SKILL.md
 ├── README.md                # GitHub README
-├── LICENSE                  # MIT (with yammaku attribution)
+├── LICENSE                  # MIT
 ├── THIRD_PARTY_LICENSES.md  # Bundled fonts + sounds + typewriter-video
 ├── scripts/
 │   ├── transcribe.py        # ffmpeg + Whisper → work/transcription.json

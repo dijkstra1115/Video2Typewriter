@@ -5,25 +5,15 @@ spoken narration. Distributed as a [Claude Code agent skill](https://claude.com/
 
 > Pipeline: **video** → ffmpeg → Whisper word-level timestamps →
 > auto-generated `TEXT_SEGMENTS` (with mode hints + `delayFrames`) → injected
-> into a bundled [yammaku/typewriter-video](https://github.com/yammaku/typewriter-video)
-> Remotion project → render to mp4.
+> into a bundled Remotion typewriter template → render to mp4.
 
 ## What it does
 
 You give it a talking-head, screencast, or podcast clip. It produces a
 typewriter animation that types out what the speaker is saying, in sync with
 the audio, ready to be used as B-roll over the original or as a standalone
-video.
-
-## Why a separate skill
-
-The upstream [`typewriter-video`](https://github.com/yammaku/typewriter-video)
-skill expects you to author `TEXT_SEGMENTS` by hand. This skill bolts a
-**Whisper-based transcription pipeline** in front of that, so you can start
-from a video file instead of a script.
-
-The Remotion engine itself is still upstream's — this repo bundles it under
-`assets/template/` so a single `git clone` is self-sufficient.
+video. A single `git clone` is self-sufficient — the Remotion engine, sound
+packs, fonts, and reference docs are all bundled.
 
 ## Install (as a Claude Code skill)
 
@@ -97,7 +87,7 @@ for the full hardware tradeoff table.
 Video2Typewriter/
 ├── SKILL.md                # Skill manifest (frontmatter + workflow)
 ├── README.md               # this file
-├── LICENSE                 # MIT (with upstream attribution)
+├── LICENSE                 # MIT
 ├── THIRD_PARTY_LICENSES.md # Bundled fonts + sounds + typewriter-video
 ├── scripts/
 │   ├── transcribe.py
@@ -108,10 +98,10 @@ Video2Typewriter/
 │   └── template/           # Bundled Remotion typewriter-video skeleton (1.9 MB)
 └── references/
     ├── pipeline-guide.md     # Pipeline internals, hardware, troubleshooting
-    ├── content-guide.md      # Storytelling techniques (bundled from yammaku)
-    ├── aroll-sync.md         # A-roll sync choreography (bundled from yammaku)
-    ├── API.md                # TextSegment field reference (bundled from yammaku)
-    └── audio.md              # Sound packs + audio overrides (bundled from yammaku)
+    ├── content-guide.md      # Storytelling techniques (modes, strike, ghost, IME)
+    ├── aroll-sync.md         # A-roll sync choreography (delayFrames math)
+    ├── API.md                # TextSegment field reference + engine architecture
+    └── audio.md              # Sound packs + per-character audio overrides
 ```
 
 ## Credits
