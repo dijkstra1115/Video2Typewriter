@@ -89,8 +89,9 @@ coarse for your source.
 
 ## Refinement workflow
 
-After `--no-render`, the agent should re-read the upstream skill's
-`references/content-guide.md` (storytelling techniques) and apply at minimum:
+After `--no-render`, the agent should re-read [`content-guide.md`](content-guide.md)
+(storytelling techniques) and [`aroll-sync.md`](aroll-sync.md) (timing math),
+then apply at minimum:
 
 1. **Transcription corrections** — Whisper makes errors on proper nouns,
    technical terms, and Chinese homophones. Read the segments line by line.

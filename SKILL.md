@@ -126,8 +126,15 @@ The pipeline gives you sync, not story. After `--no-render`, the agent should:
 8. **Re-balance `delayFrames`** if the typewriter falls behind — usually because polishing added strike/deliberate that lengthens segments
 
 The full storytelling vocabulary lives inside the bundled template at
-`src/Typewriter.tsx` (living tutorial) and the upstream skill's
-`references/content-guide.md`.
+`src/Typewriter.tsx` (living tutorial) and the bundled references in this
+skill:
+
+| Reference | Use when |
+|---|---|
+| [`references/content-guide.md`](references/content-guide.md) | Step 4 storytelling — mode selection, strikeText philosophy, ghost/IME/emoji usage |
+| [`references/aroll-sync.md`](references/aroll-sync.md) | Re-balancing `delayFrames` after refinement — `delayFrames = phrase_end_frame − typing_cost` formula, J-cut lead-ins, frame cost table |
+| [`references/API.md`](references/API.md) | Looking up TextSegment fields — `ghostText`, `strikeText`, `imeInput`, `insertAt`, `file`, `emojiPicker`, theme system, image stacks |
+| [`references/audio.md`](references/audio.md) | Switching sound packs (nk-cream / holy-pandas / cream-travel / turquoise) or per-character sound overrides |
 
 ## Step 5: Preview, then render
 
@@ -175,7 +182,11 @@ video2typewriter/
 ├── assets/
 │   └── template/            # Bundled Remotion typewriter-video skeleton
 └── references/
-    └── pipeline-guide.md    # Deep-dive on the pipeline, hardware, troubleshooting
+    ├── pipeline-guide.md    # Deep-dive on the pipeline, hardware, troubleshooting
+    ├── content-guide.md     # Storytelling techniques (modes, strike, ghost, IME)
+    ├── aroll-sync.md        # A-roll sync choreography (delayFrames math)
+    ├── API.md               # TextSegment field reference + engine architecture
+    └── audio.md             # Sound packs + per-character audio overrides
 ```
 
 ## Troubleshooting

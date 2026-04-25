@@ -107,7 +107,11 @@ Video2Typewriter/
 ├── assets/
 │   └── template/           # Bundled Remotion typewriter-video skeleton (1.9 MB)
 └── references/
-    └── pipeline-guide.md
+    ├── pipeline-guide.md     # Pipeline internals, hardware, troubleshooting
+    ├── content-guide.md      # Storytelling techniques (bundled from yammaku)
+    ├── aroll-sync.md         # A-roll sync choreography (bundled from yammaku)
+    ├── API.md                # TextSegment field reference (bundled from yammaku)
+    └── audio.md              # Sound packs + audio overrides (bundled from yammaku)
 ```
 
 ## Credits

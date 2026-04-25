@@ -10,9 +10,14 @@ licenses are reproduced below.
 - **Source**: [yammaku/typewriter-video](https://github.com/yammaku/typewriter-video)
 - **License**: MIT
 - **Copyright**: Copyright (c) 2024 yammaku
-- **Files**: everything under `assets/template/` — the Remotion project
-  skeleton, including `src/TypewriterText.tsx`, `src/Typewriter.tsx`, themes,
-  layout, syntax highlighter, image rendering, audio sync, etc.
+- **Files**:
+  - everything under `assets/template/` — the Remotion project skeleton,
+    including `src/TypewriterText.tsx`, `src/Typewriter.tsx`, themes,
+    layout, syntax highlighter, image rendering, audio sync, etc.
+  - `references/content-guide.md`, `references/aroll-sync.md`,
+    `references/API.md`, `references/audio.md` — bundled verbatim from the
+    upstream skill so this repo is self-sufficient without requiring the
+    upstream `typewriter-video` skill to be installed.
 
 The MIT license text is reproduced in this repository's `LICENSE` file (it
 applies to both this project and the bundled typewriter-video sources).
