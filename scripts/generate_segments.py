@@ -13,8 +13,6 @@ from typing import Any
 
 
 FPS = 29.97
-SCRIPT_DIR = Path(__file__).resolve().parent
-WORK_DIR = SCRIPT_DIR / "work"
 
 
 @dataclass
@@ -71,9 +69,21 @@ def parse_args() -> argparse.Namespace:
         help="Force a new segment before text grows beyond this many characters.",
     )
     parser.add_argument(
+        "--project-dir",
+        default=".",
+        help=(
+            "Target Remotion project directory. Output is written to "
+            "<project-dir>/work/segments.ts unless --output overrides it. "
+            "Default: current working directory."
+        ),
+    )
+    parser.add_argument(
         "--output",
-        default=str(WORK_DIR / "segments.ts"),
-        help="Output TypeScript path. Default: work/segments.ts",
+        default=None,
+        help=(
+            "Override output TypeScript path. Defaults to "
+            "<project-dir>/work/segments.ts."
+        ),
     )
     return parser.parse_args()
 
@@ -274,7 +284,11 @@ def main() -> int:
 
     segments = build_segments(words, args.offset, args.max_words, args.max_chars)
 
-    segments_ts = Path(args.output).expanduser().resolve()
+    project_dir = Path(args.project_dir).expanduser().resolve()
+    if args.output:
+        segments_ts = Path(args.output).expanduser().resolve()
+    else:
+        segments_ts = project_dir / "work" / "segments.ts"
     segments_ts.parent.mkdir(parents=True, exist_ok=True)
     write_segments_ts(segments, segments_ts)
 

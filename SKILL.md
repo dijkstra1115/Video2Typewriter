@@ -51,23 +51,21 @@ Chinese is `large-v3` and needs roughly 10 GB VRAM or a long CPU wait.
 
 ## Step 1: Bootstrap the project
 
-The Python scripts must live alongside `src/Typewriter.tsx` because
-`inject_segments.py` rewrites that file via a path relative to its own
-location. From the user's chosen working directory:
+Only the Remotion template needs to be copied into the user's project — the
+pipeline scripts stay in the skill and are invoked by absolute path with
+`--project-dir` pointing at the project. That way, bug fixes in the skill
+propagate to existing projects automatically.
 
 ```bash
 SKILL=<absolute path to this skill>
 PROJECT=./typewriter-from-video   # or any name the user prefers
 
-# Copy the bundled Remotion template + pipeline scripts into PROJECT
+# Copy ONLY the bundled Remotion template into PROJECT
 mkdir -p "$PROJECT"
 cp -r "$SKILL/assets/template/"* "$PROJECT/"
-cp "$SKILL/scripts/"*.py "$SKILL/scripts/pipeline.sh" "$PROJECT/"
-chmod +x "$PROJECT/pipeline.sh"
 
 # Install JS deps (slow — Remotion pulls in Chromium)
-cd "$PROJECT"
-npm install
+(cd "$PROJECT" && npm install)
 ```
 
 > Resolve `<SKILL>` to its real path on disk — typically
@@ -86,10 +84,11 @@ The first run downloads the chosen Whisper model (~1.5 GB for `medium`,
 
 ## Step 3: Run the pipeline
 
-From the project root (where `pipeline.sh` was copied to):
+Invoke the skill's `pipeline.sh` from anywhere — it takes the project location
+as a flag, not as a working directory.
 
 ```bash
-./pipeline.sh /path/to/video.mp4 [options]
+bash "$SKILL/scripts/pipeline.sh" /path/to/video.mp4 --project-dir "$PROJECT" [options]
 ```
 
 ### Most useful flags
@@ -107,7 +106,8 @@ From the project root (where `pipeline.sh` was copied to):
 
 For Chinese (Taiwan), the recommended invocation is:
 ```bash
-./pipeline.sh demo.mp4 --language zh --traditional --no-render
+bash "$SKILL/scripts/pipeline.sh" demo.mp4 --project-dir "$PROJECT" \
+    --language zh --traditional --no-render
 ```
 
 `--no-render` is intentional — the agent should review and refine before rendering.
@@ -132,13 +132,14 @@ The full storytelling vocabulary lives inside the bundled template at
 ## Step 5: Preview, then render
 
 ```bash
-npm run studio    # interactive preview at http://localhost:3000
-npm run render    # output: out/typewriter.mp4
+(cd "$PROJECT" && npm run studio)    # interactive preview at http://localhost:3000
+(cd "$PROJECT" && npm run render)    # output: $PROJECT/out/typewriter.mp4
 ```
 
 To re-render after edits without re-transcribing:
 ```bash
-./pipeline.sh demo.mp4 --skip-transcribe --yes
+bash "$SKILL/scripts/pipeline.sh" demo.mp4 --project-dir "$PROJECT" \
+    --skip-transcribe --yes
 ```
 
 ## Files left in the project after a run

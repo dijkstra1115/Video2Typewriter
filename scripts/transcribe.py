@@ -12,9 +12,6 @@ import tempfile
 from pathlib import Path
 
 
-SCRIPT_DIR = Path(__file__).resolve().parent
-
-
 def fail(message: str, code: int = 1) -> None:
     print(f"Error: {message}", file=sys.stderr)
     raise SystemExit(code)
@@ -44,9 +41,21 @@ def parse_args() -> argparse.Namespace:
         help="Convert Chinese output to Traditional Chinese with OpenCC.",
     )
     parser.add_argument(
+        "--project-dir",
+        default=".",
+        help=(
+            "Target Remotion project directory. Output is written to "
+            "<project-dir>/work/transcription.json unless --output overrides it. "
+            "Default: current working directory."
+        ),
+    )
+    parser.add_argument(
         "--output",
-        default=str(SCRIPT_DIR / "work" / "transcription.json"),
-        help="Output JSON path. Default: work/transcription.json.",
+        default=None,
+        help=(
+            "Override output JSON path. Defaults to "
+            "<project-dir>/work/transcription.json."
+        ),
     )
     return parser.parse_args()
 
@@ -141,7 +150,11 @@ def main() -> int:
     if not video_path.is_file():
         fail(f"input path is not a file: {video_path}")
 
-    output_path = Path(args.output).expanduser().resolve()
+    project_dir = Path(args.project_dir).expanduser().resolve()
+    if args.output:
+        output_path = Path(args.output).expanduser().resolve()
+    else:
+        output_path = project_dir / "work" / "transcription.json"
     output_path.parent.mkdir(parents=True, exist_ok=True)
     temp_wav = Path(tempfile.NamedTemporaryFile(suffix=".wav", delete=False).name)
 

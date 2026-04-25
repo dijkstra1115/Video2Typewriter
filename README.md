@@ -52,27 +52,25 @@ the pipeline, refine for storytelling, then render.
 ## Manual use (without an AI agent)
 
 ```bash
-# 1. Bootstrap a project directory from the bundled template + scripts
+# 1. Bootstrap a project directory from the bundled Remotion template
 SKILL=~/.claude/skills/video2typewriter
 PROJECT=./my-typewriter-video
 mkdir -p "$PROJECT"
 cp -r "$SKILL/assets/template/"* "$PROJECT/"
-cp "$SKILL/scripts/"*.py "$SKILL/scripts/pipeline.sh" "$PROJECT/"
-chmod +x "$PROJECT/pipeline.sh"
 
 # 2. Install JS deps (slow — Remotion pulls in Chromium)
-cd "$PROJECT"
-npm install
+(cd "$PROJECT" && npm install)
 
 # 3. Install Python deps
 pip install openai-whisper opencc-python-reimplemented
 
-# 4. Run the pipeline
-./pipeline.sh /path/to/video.mp4 --language zh --traditional --no-render
+# 4. Run the pipeline (scripts stay in the skill — no copy needed)
+bash "$SKILL/scripts/pipeline.sh" /path/to/video.mp4 --project-dir "$PROJECT" \
+    --language zh --traditional --no-render
 
-# 5. Edit src/Typewriter.tsx to polish, then preview / render
-npm run studio    # interactive preview
-npm run render    # output: out/typewriter.mp4
+# 5. Edit $PROJECT/src/Typewriter.tsx to polish, then preview / render
+(cd "$PROJECT" && npm run studio)    # interactive preview
+(cd "$PROJECT" && npm run render)    # output: $PROJECT/out/typewriter.mp4
 ```
 
 See [`SKILL.md`](SKILL.md) for the full workflow, and

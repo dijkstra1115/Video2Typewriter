@@ -69,14 +69,14 @@ audio; `small` is a safer fallback for older hardware.
 ## Tuning segment splitting
 
 `generate_segments.py` exposes `--max-words` and `--max-chars` but
-**`pipeline.sh` does not forward them**. To experiment, run the script
-directly on a cached transcription:
+**`pipeline.sh` does not forward them**. To experiment, run the scripts
+directly on a cached transcription (assuming `$SKILL` and `$PROJECT` are set):
 
 ```bash
-python scripts/generate_segments.py work/transcription.json \
-    --max-words 8 --max-chars 24 \
-    --offset 0 --output work/segments.ts
-python scripts/inject_segments.py
+python "$SKILL/scripts/generate_segments.py" "$PROJECT/work/transcription.json" \
+    --project-dir "$PROJECT" \
+    --max-words 8 --max-chars 24 --offset 0
+python "$SKILL/scripts/inject_segments.py" --project-dir "$PROJECT"
 ```
 
 Lower values produce more, shorter segments — useful for fast-paced narration.
@@ -168,10 +168,10 @@ The injection step is idempotent — repeated runs replace the entire
 `TEXT_SEGMENTS` block, not append. To start completely fresh:
 
 ```bash
-mv src/Typewriter.tsx.bak src/Typewriter.tsx
-mv src/Root.tsx.bak src/Root.tsx
-rm -rf work/
-./pipeline.sh video.mp4 [...]
+mv "$PROJECT/src/Typewriter.tsx.bak" "$PROJECT/src/Typewriter.tsx"
+mv "$PROJECT/src/Root.tsx.bak" "$PROJECT/src/Root.tsx"
+rm -rf "$PROJECT/work/"
+bash "$SKILL/scripts/pipeline.sh" video.mp4 --project-dir "$PROJECT" [...]
 ```
 
 ## Updating the bundled template from upstream
@@ -179,9 +179,12 @@ rm -rf work/
 Periodically the upstream `yammaku/typewriter-video` ships new themes,
 features, or sound packs. To resync:
 
+From the skill repo root:
+
 ```bash
 git clone --depth 1 https://github.com/yammaku/typewriter-video.git /tmp/upstream
-rsync -av --delete /tmp/upstream/assets/template/ assets/template/
+rsync -av --delete /tmp/upstream/ assets/template/ \
+    --exclude='.git' --exclude='node_modules' --exclude='out'
 rm -rf /tmp/upstream
 ```
 
