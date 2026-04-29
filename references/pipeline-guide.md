@@ -166,7 +166,12 @@ gives a 2-second cursor blink at the end.
 ## Re-running the pipeline cleanly
 
 The injection step is idempotent — repeated runs replace the entire
-`TEXT_SEGMENTS` block, not append. To start completely fresh:
+`TEXT_SEGMENTS` block, not append. This is for regenerating a rough pass.
+After a manual director pass, re-render with `npm run render`; running the
+pipeline again, including with `--skip-transcribe`, overwrites manual edits in
+`src/Typewriter.tsx`.
+
+To start completely fresh:
 
 ```bash
 mv "$PROJECT/src/Typewriter.tsx.bak" "$PROJECT/src/Typewriter.tsx"
@@ -190,4 +195,4 @@ rm -rf /tmp/upstream
 ```
 
 Review the diff, update `THIRD_PARTY_LICENSES.md` if the upstream license
-changes, and bump the `version` field in `SKILL.md`.
+changes, and bump the body version noted in `SKILL.md`.

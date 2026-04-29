@@ -1,7 +1,7 @@
 # Video2Typewriter
 
 Turn a video into a VS Code-style typewriter B-roll, frame-synced to its
-spoken narration. Distributed as a [Claude Code agent skill](https://claude.com/claude-code).
+spoken narration. Distributed as an agent skill for Codex and Claude Code.
 
 > Pipeline: **video** → ffmpeg → Whisper word-level timestamps →
 > auto-generated `TEXT_SEGMENTS` (with mode hints + `delayFrames`) → injected
@@ -15,17 +15,21 @@ the audio, ready to be used as B-roll over the original or as a standalone
 video. A single `git clone` is self-sufficient — the Remotion engine, sound
 packs, fonts, and reference docs are all bundled.
 
-## Install (as a Claude Code skill)
+## Install as an agent skill
 
 ```bash
-# Tell your AI agent to install this skill:
+# Codex
+git clone https://github.com/dijkstra1115/Video2Typewriter.git \
+  ~/.codex/skills/video2typewriter
+
+# Claude Code
 git clone https://github.com/dijkstra1115/Video2Typewriter.git \
   ~/.claude/skills/video2typewriter
 ```
 
-Or just say to Claude Code: *"Install the skill at
-https://github.com/dijkstra1115/Video2Typewriter"* — the agent will clone it
-to the right place.
+Or ask your agent to install the skill at
+`https://github.com/dijkstra1115/Video2Typewriter`; it should clone it into
+the correct host-specific skills directory.
 
 ## Use
 
@@ -43,10 +47,10 @@ the pipeline, refine for storytelling, then render.
 
 ```bash
 # 1. Bootstrap a project directory from the bundled Remotion template
-SKILL=~/.claude/skills/video2typewriter
+SKILL=~/.codex/skills/video2typewriter   # or ~/.claude/skills/video2typewriter
 PROJECT=./my-typewriter-video
 mkdir -p "$PROJECT"
-cp -r "$SKILL/assets/template/"* "$PROJECT/"
+cp -a "$SKILL/assets/template/." "$PROJECT/"
 
 # 2. Install JS deps (slow — Remotion pulls in Chromium)
 (cd "$PROJECT" && npm install)
@@ -66,6 +70,11 @@ bash "$SKILL/scripts/pipeline.sh" /path/to/video.mp4 --project-dir "$PROJECT" \
 See [`SKILL.md`](SKILL.md) for the full workflow, and
 [`references/pipeline-guide.md`](references/pipeline-guide.md) for hardware
 notes, flag reference, refinement checklist, and troubleshooting.
+
+For polished output, the agent should also run a director pass after the synced
+rough draft is generated. See [`references/director-guide.md`](references/director-guide.md)
+for Markdown layout, visual density, image usage, and taste rules. Concrete
+patterns live in [`references/examples/`](references/examples/).
 
 ## Requirements
 
@@ -99,9 +108,11 @@ Video2Typewriter/
 └── references/
     ├── pipeline-guide.md     # Pipeline internals, hardware, troubleshooting
     ├── content-guide.md      # Storytelling techniques (modes, strike, ghost, IME)
+    ├── director-guide.md     # Director pass (Markdown layout, images, taste)
     ├── aroll-sync.md         # A-roll sync choreography (delayFrames math)
     ├── API.md                # TextSegment field reference + engine architecture
-    └── audio.md              # Sound packs + per-character audio overrides
+    ├── audio.md              # Sound packs + per-character audio overrides
+    └── examples/             # Directed segment patterns agents can imitate
 ```
 
 ## Credits

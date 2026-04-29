@@ -8,11 +8,6 @@ description: >
   into a bundled Remotion template → render. Use when the user has a
   finished video (talking-head, screencast, podcast clip) and wants the
   typewriter to mirror what's spoken, frame-synced to the audio.
-compatibility: Requires Python >= 3.9, ffmpeg, Node.js >= 18, and openai-whisper.
-license: MIT
-metadata:
-  author: dijkstra1115
-  version: "0.1"
 ---
 
 # Video2Typewriter
@@ -27,6 +22,15 @@ A working Remotion project where `TEXT_SEGMENTS` is populated by Whisper word-
 level timestamps and `delayFrames` is synced to the source video's audio. The
 agent then polishes for storytelling, previews in Remotion Studio, and renders
 to `out/typewriter.mp4`.
+
+## Supported agent hosts
+
+This skill is usable from Codex and Claude Code. Keep only `name` and
+`description` in this file's YAML frontmatter so Codex discovery and packaging
+validation stay compatible. Host-specific install paths belong in instructions,
+not frontmatter.
+
+License: MIT. Author: dijkstra1115. Version: 0.1.
 
 ## Required prerequisites
 
@@ -58,15 +62,17 @@ PROJECT=./typewriter-from-video   # or any name the user prefers
 
 # Copy ONLY the bundled Remotion template into PROJECT
 mkdir -p "$PROJECT"
-cp -r "$SKILL/assets/template/"* "$PROJECT/"
+cp -a "$SKILL/assets/template/." "$PROJECT/"
 
 # Install JS deps (slow — Remotion pulls in Chromium)
 (cd "$PROJECT" && npm install)
 ```
 
-> Resolve `<SKILL>` to its real path on disk — typically
-> `~/.claude/skills/video2typewriter` on macOS/Linux or
-> `C:\Users\<user>\.claude\skills\video2typewriter` on Windows.
+> Resolve `<SKILL>` to the real directory containing this `SKILL.md`. Common
+> installs are `~/.codex/skills/video2typewriter` for Codex and
+> `~/.claude/skills/video2typewriter` for Claude Code on macOS/Linux, or the
+> matching `.codex\skills\video2typewriter` / `.claude\skills\video2typewriter`
+> folder under `C:\Users\<user>` on Windows.
 
 ## Step 2: Install Python dependencies
 
@@ -82,6 +88,11 @@ The first run downloads the chosen Whisper model (~1.5 GB for `medium`,
 
 Invoke the skill's `pipeline.sh` from anywhere — it takes the project location
 as a flag, not as a working directory.
+
+Before running or changing pipeline behavior, read
+[`references/pipeline-guide.md`](references/pipeline-guide.md). It explains the
+transcription → segment generation → injection flow, model/hardware tradeoffs,
+advanced segment splitting, safe re-runs, and recovery from failed runs.
 
 ```bash
 bash "$SKILL/scripts/pipeline.sh" /path/to/video.mp4 --project-dir "$PROJECT" [options]
@@ -108,9 +119,23 @@ bash "$SKILL/scripts/pipeline.sh" demo.mp4 --project-dir "$PROJECT" \
 
 `--no-render` is intentional — the agent should review and refine before rendering.
 
-## Step 4: Refine before rendering
+## Step 4: Director pass before rendering
 
-The pipeline gives you sync, not story. After `--no-render`, the agent should:
+The pipeline gives you sync, not direction. After `--no-render`, the agent must
+turn the rough transcript into an intentional Markdown B-roll score before
+preview or render.
+
+Run refinement in passes, not as one giant edit:
+
+1. transcript correction
+2. Markdown structure
+3. timing and anchor/FLOW cleanup
+4. visual assets
+5. performance effects
+6. timing validation
+7. Remotion Studio preview
+
+Minimum director checklist:
 
 1. **Fix transcription errors** — proper nouns, technical terms, homophones (especially Chinese)
 2. **Promote key words** to `mode: "deliberate"` — punchlines, brand names, callouts
@@ -121,16 +146,35 @@ The pipeline gives you sync, not story. After `--no-render`, the agent should:
 7. **Consider `imeInput: true`** on 1 anchor word per chapter (Chinese only)
 8. **Re-balance `delayFrames`** if the typewriter falls behind — usually because polishing added strike/deliberate that lengthens segments
 
-The full storytelling vocabulary lives inside the bundled template at
-`src/Typewriter.tsx` (living tutorial) and the bundled references in this
-skill:
+Additional director requirements:
 
-| Reference | Use when |
+1. **Structure the board as Markdown** - headings, short paragraphs, quotes, lists, checklists, and file switches
+2. **Keep screen text close to narration** - a simplified echo, not unrelated copy
+3. **Add visual assets when useful** - screenshots, focused crops, simple diagrams, or image stacks in `public/`
+4. **Use animated checkboxes** for milestones, debugging, progress, and feature lists
+5. **Validate visual density** - any paused frame should look like an intentional note page
+
+The full director vocabulary lives inside the bundled template at
+`src/Typewriter.tsx` (living tutorial) and the bundled references in this
+skill. Read only the references needed for the current task:
+
+| Reference | Priority | Use when |
+|---|---|---|
+| [`references/pipeline-guide.md`](references/pipeline-guide.md) | Conditional | Running, tuning, or debugging the pipeline: Whisper model choice, generated files, segmentation knobs, safe re-runs, troubleshooting. Read relevant sections before changing pipeline behavior. |
+| [`references/director-guide.md`](references/director-guide.md) | Required after `--no-render` | Turning rough transcript into directed Markdown B-roll: layout, density, image usage, taste rules |
+| [`references/content-guide.md`](references/content-guide.md) | Required when adding effects | Storytelling effect semantics: `deliberate`, `thinking`, `strikeText`, `ghostText`, IME, emoji, checkboxes |
+| [`references/aroll-sync.md`](references/aroll-sync.md) | Required when adjusting sync | Re-balancing `delayFrames`, J-cut lead-ins, anchor/FLOW decisions, timing budget checks |
+| [`references/API.md`](references/API.md) | Conditional | Looking up exact `TextSegment` fields or engine behavior: images, image stacks, checkboxes, `insertAt`, themes, overlays |
+| [`references/audio.md`](references/audio.md) | Conditional | Switching sound packs or debugging keyboard audio sync |
+
+For concrete patterns the agent can imitate, read at most one or two relevant
+examples:
+
+| Example | Use when |
 |---|---|
-| [`references/content-guide.md`](references/content-guide.md) | Step 4 storytelling — mode selection, strikeText philosophy, ghost/IME/emoji usage |
-| [`references/aroll-sync.md`](references/aroll-sync.md) | Re-balancing `delayFrames` after refinement — `delayFrames = phrase_end_frame − typing_cost` formula, J-cut lead-ins, frame cost table |
-| [`references/API.md`](references/API.md) | Looking up TextSegment fields — `ghostText`, `strikeText`, `imeInput`, `insertAt`, `file`, `emojiPicker`, theme system, image stacks |
-| [`references/audio.md`](references/audio.md) | Switching sound packs (nk-cream / holy-pandas / cream-travel / turquoise) or per-character sound overrides |
+| [`references/examples/dev-journey.md`](references/examples/dev-journey.md) | Showing a build process, progress checklist, or skill development story |
+| [`references/examples/tutorial-explainer.md`](references/examples/tutorial-explainer.md) | Teaching a method, framework, or workflow |
+| [`references/examples/sponsor-segment.md`](references/examples/sponsor-segment.md) | Turning sponsor/tool mentions into useful product notes and screenshots |
 
 ## Step 5: Preview, then render
 
@@ -141,9 +185,12 @@ skill:
 
 To re-render after edits without re-transcribing:
 ```bash
-bash "$SKILL/scripts/pipeline.sh" demo.mp4 --project-dir "$PROJECT" \
-    --skip-transcribe --yes
+(cd "$PROJECT" && npm run render)
 ```
+
+Do not use `pipeline.sh --skip-transcribe` after a manual director pass unless
+you intentionally want to regenerate `work/segments.ts` and re-inject
+`src/Typewriter.tsx`; that overwrites the edited `TEXT_SEGMENTS` block.
 
 ## Files left in the project after a run
 
@@ -159,8 +206,9 @@ src/
 └── Root.tsx.bak          # Backup of pre-injection state
 ```
 
-Re-running the pipeline is safe — the regex replaces the whole `TEXT_SEGMENTS`
-block atomically.
+Re-running the pipeline is safe for regenerating a rough pass — the regex
+replaces the whole `TEXT_SEGMENTS` block atomically. After manual edits, render
+with `npm run render` instead of re-running the pipeline.
 
 ## Project structure (this skill)
 
@@ -180,9 +228,11 @@ video2typewriter/
 └── references/
     ├── pipeline-guide.md    # Deep-dive on the pipeline, hardware, troubleshooting
     ├── content-guide.md     # Storytelling techniques (modes, strike, ghost, IME)
+    ├── director-guide.md    # Director pass (Markdown layout, density, images, taste)
     ├── aroll-sync.md        # A-roll sync choreography (delayFrames math)
     ├── API.md               # TextSegment field reference + engine architecture
-    └── audio.md             # Sound packs + per-character audio overrides
+    ├── audio.md             # Sound packs + per-character audio overrides
+    └── examples/            # Directed segment patterns agents can imitate
 ```
 
 ## Troubleshooting

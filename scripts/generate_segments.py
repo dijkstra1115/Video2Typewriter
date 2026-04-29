@@ -114,7 +114,12 @@ def load_words(path: Path) -> list[Word]:
         if end < start:
             fail(f"word entry {index} has end before start.")
         raw_segment = item.get("segment")
-        segment = int(raw_segment) if isinstance(raw_segment, int | float | str) and str(raw_segment).isdigit() else None
+        segment = (
+            int(raw_segment)
+            if isinstance(raw_segment, (int, float, str))
+            and str(raw_segment).isdigit()
+            else None
+        )
         words.append(Word(text=text, start=start, end=end, segment=segment))
 
     if not words:
