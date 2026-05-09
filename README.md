@@ -15,6 +15,12 @@ the audio, ready to be used as B-roll over the original or as a standalone
 video. A single `git clone` is self-sufficient — the Remotion engine, sound
 packs, fonts, and reference docs are all bundled.
 
+## Demo
+
+<video src="demo.mp4" controls width="100%"></video>
+
+[Watch the demo video](demo.mp4)
+
 ## Install as an agent skill
 
 ```bash
@@ -96,6 +102,7 @@ for the full hardware tradeoff table.
 Video2Typewriter/
 ├── SKILL.md                # Skill manifest (frontmatter + workflow)
 ├── README.md               # this file
+├── demo.mp4                # README demo video
 ├── LICENSE                 # MIT
 ├── THIRD_PARTY_LICENSES.md # Bundled fonts + sounds + typewriter-video
 ├── scripts/
