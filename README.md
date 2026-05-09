@@ -17,7 +17,7 @@ packs, fonts, and reference docs are all bundled.
 
 ## Demo
 
-<video src="https://github.com/dijkstra1115/Video2Typewriter/raw/main/demo.mp4" controls width="100%"></video>
+![Video2Typewriter demo](demo.gif)
 
 [Watch the demo video](demo.mp4)
 
