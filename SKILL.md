@@ -125,15 +125,30 @@ The pipeline gives you sync, not direction. After `--no-render`, the agent must
 turn the rough transcript into an intentional Markdown B-roll score before
 preview or render.
 
-Run refinement in passes, not as one giant edit:
+This is a required gate, not an optional polish pass. Do not start Remotion
+Studio, render, or call the work finished while `TEXT_SEGMENTS` still reads like
+plain transcript chunks. The agent must first read
+[`references/director-guide.md`](references/director-guide.md), then rewrite
+`src/Typewriter.tsx` so the board has visible Markdown structure.
 
-1. transcript correction
-2. Markdown structure
-3. timing and anchor/FLOW cleanup
-4. visual assets
-5. performance effects
-6. timing validation
-7. Remotion Studio preview
+Required director workflow:
+
+1. Read `references/director-guide.md` before editing `TEXT_SEGMENTS`.
+2. Understand the narration and split it into semantic beats or chapters.
+3. Correct transcript errors: proper nouns, technical terms, homophones, and
+   obvious Whisper mistakes.
+4. Rewrite transcript-like chunks into a Markdown board score: headings, short
+   paragraphs, quotes, lists, checklists, code blocks, and intentional blank
+   lines.
+5. Keep screen text close to narration: simplified echo, not unrelated copy.
+6. Re-balance timing: keep `delayFrames` on beat anchors, remove unnecessary
+   mid-sentence anchors, and let nearby segments FLOW when possible.
+7. Add visual assets only when they clarify something the narration references.
+8. Add performance effects sparingly: `deliberate`, `thinking`, `ghostText`,
+   `strikeText`, `imeInput`, emoji, and animated checkboxes.
+9. Validate timing and visual density before preview.
+10. Preview in Remotion Studio only after the Markdown score passes the
+    acceptance checklist below.
 
 Minimum director checklist:
 
@@ -153,6 +168,22 @@ Additional director requirements:
 3. **Add visual assets when useful** - screenshots, focused crops, simple diagrams, or image stacks in `public/`
 4. **Use animated checkboxes** for milestones, debugging, progress, and feature lists
 5. **Validate visual density** - any paused frame should look like an intentional note page
+
+Markdown score acceptance checklist:
+
+1. The first visible beat is a hook, heading, claim, or useful note - not a raw
+   sentence fragment from the transcript.
+2. The board contains multiple Markdown structures, such as `#`/`##` headings,
+   blank-line paragraph breaks, `>` quotes, `-` bullets, numbered lists,
+   checklists, or fenced code blocks when relevant.
+3. Most visible paragraphs are short enough to scan in 1-2 lines.
+4. The text preserves important names, numbers, dates, product labels, and
+   technical terms from the narration.
+5. Filler speech has been removed unless the hesitation is part of the story.
+6. `delayFrames` are not attached to every tiny transcript chunk unless the
+   source timing truly requires it.
+7. If the final `TEXT_SEGMENTS` still looks like subtitles being typed one chunk
+   at a time, the director pass is not complete.
 
 The full director vocabulary lives inside the bundled template at
 `src/Typewriter.tsx` (living tutorial) and the bundled references in this
