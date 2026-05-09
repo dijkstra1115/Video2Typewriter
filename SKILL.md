@@ -144,6 +144,10 @@ Required director workflow:
 6. Re-balance timing: keep `delayFrames` on beat anchors, remove unnecessary
    mid-sentence anchors, and let nearby segments FLOW when possible.
 7. Add visual assets only when they clarify something the narration references.
+   If the user provided or mentioned image files, copy those images into
+   `<project>/public/` with concise descriptive filenames before referencing
+   them. Keep the originals in place. Use `image.src` paths relative to
+   `public/`, such as `screenshots/pricing-card.png`.
 8. Add performance effects sparingly: `deliberate`, `thinking`, `ghostText`,
    `strikeText`, `imeInput`, emoji, and animated checkboxes.
 9. Validate timing and visual density before preview.
@@ -165,7 +169,7 @@ Additional director requirements:
 
 1. **Structure the board as Markdown** - headings, short paragraphs, quotes, lists, checklists, and file switches
 2. **Keep screen text close to narration** - a simplified echo, not unrelated copy
-3. **Add visual assets when useful** - screenshots, focused crops, simple diagrams, or image stacks in `public/`
+3. **Add visual assets when useful** - screenshots, focused crops, simple diagrams, or image stacks in `public/`. If the user provides images outside the Remotion project, copy them into `<project>/public/` first and reference the copied files.
 4. **Use animated checkboxes** for milestones, debugging, progress, and feature lists
 5. **Validate visual density** - any paused frame should look like an intentional note page
 

@@ -115,7 +115,12 @@ Avoid images for:
 Asset placement:
 
 - Put project-specific images in `<project>/public/`.
+- When the user provides or mentions image files outside the Remotion project
+  (for example next to the source video or in the workspace root), copy them
+  into `<project>/public/` before use. Do not move or delete the originals.
 - Use concise filenames: `skill-grid.png`, `pricing-card.png`, `workflow-loop.png`.
+- Reference copied assets with paths relative to `public/`, for example
+  `image: { src: "screenshots/pricing-card.png", ... }`.
 - Prefer focused crops over full-page screenshots.
 - Insert single images with `image: { src, heightLines, width, animation }`.
 - Insert rapid visual collections with `imageStack`.
@@ -193,4 +198,3 @@ Before render, verify:
 - Images appear only when they add evidence or clarity.
 - Any frame paused mid-video looks like an intentional note page.
 - Timing has no obvious overrun, long idle gap, or mid-sentence anchor stall.
-
