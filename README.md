@@ -17,7 +17,7 @@ packs, fonts, and reference docs are all bundled.
 
 ## Demo
 
-<video src="demo.mp4" controls width="100%"></video>
+<video src="https://github.com/dijkstra1115/Video2Typewriter/raw/main/demo.mp4" controls width="100%"></video>
 
 [Watch the demo video](demo.mp4)
 
@@ -102,6 +102,7 @@ for the full hardware tradeoff table.
 Video2Typewriter/
 ├── SKILL.md                # Skill manifest (frontmatter + workflow)
 ├── README.md               # this file
+├── demo.gif                # README inline demo
 ├── demo.mp4                # README demo video
 ├── LICENSE                 # MIT
 ├── THIRD_PARTY_LICENSES.md # Bundled fonts + sounds + typewriter-video
